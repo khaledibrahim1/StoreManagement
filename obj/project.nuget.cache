@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "6GDZl7Wz8VI=",
+  "success": true,
+  "projectFilePath": "D:\\LEVEL 3\\s2\\HCI\\project Gui\\StoreManagement\\StoreManagement.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\GAMA\\.nuget\\packages\\stub.system.data.sqlite.core.netstandard\\1.0.119\\stub.system.data.sqlite.core.netstandard.1.0.119.nupkg.sha512",
+    "C:\\Users\\GAMA\\.nuget\\packages\\system.data.sqlite.core\\1.0.119\\system.data.sqlite.core.1.0.119.nupkg.sha512"
+  ],
+  "logs": []
+}
