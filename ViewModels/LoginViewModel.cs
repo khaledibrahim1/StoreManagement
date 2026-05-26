@@ -27,10 +27,12 @@ namespace StoreManagement.ViewModels
         }
 
         public ICommand LoginCommand { get; }
+        public ICommand GoToRegisterCommand { get; }
 
         public LoginViewModel()
         {
             LoginCommand = new RelayCommand(ExecuteLogin);
+            GoToRegisterCommand = new RelayCommand(ExecuteGoToRegister);
         }
 
         private void ExecuteLogin(object parameter)
@@ -38,7 +40,7 @@ namespace StoreManagement.ViewModels
             if (parameter is System.Windows.Controls.PasswordBox passwordBox)
             {
                 string password = passwordBox.Password;
-                if (Username == "admin" && password == "admin")
+                if (Database.DatabaseHelper.ValidateUser(Username, password))
                 {
                     var window = Window.GetWindow(passwordBox);
                     var mainWindow = new MainWindow();
@@ -49,6 +51,16 @@ namespace StoreManagement.ViewModels
                 {
                     ErrorMessage = "Invalid username or password.";
                 }
+            }
+        }
+
+        private void ExecuteGoToRegister(object parameter)
+        {
+            if (parameter is Window window)
+            {
+                var registerWindow = new Views.RegisterWindow();
+                registerWindow.Show();
+                window.Close();
             }
         }
     }

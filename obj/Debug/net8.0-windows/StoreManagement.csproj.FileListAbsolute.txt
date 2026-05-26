@@ -41,3 +41,5 @@ D:\LEVEL 3\s2\HCI\project Gui\StoreManagement\obj\Debug\net8.0-windows\Views\Log
 D:\LEVEL 3\s2\HCI\project Gui\StoreManagement\obj\Debug\net8.0-windows\Views\HomeWindow.baml
 D:\LEVEL 3\s2\HCI\project Gui\StoreManagement\obj\Debug\net8.0-windows\Views\LoginWindow.baml
 D:\LEVEL 3\s2\HCI\project Gui\StoreManagement\obj\Debug\net8.0-windows\StoreManagement.sourcelink.json
+D:\LEVEL 3\s2\HCI\project Gui\StoreManagement\obj\Debug\net8.0-windows\Views\RegisterWindow.g.cs
+D:\LEVEL 3\s2\HCI\project Gui\StoreManagement\obj\Debug\net8.0-windows\Views\RegisterWindow.baml

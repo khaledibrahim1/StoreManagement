@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP
 D:\LEVEL 3\s2\HCI\project Gui\StoreManagement\App.xaml
-82107663497
+9-1597395554
 
-27-1874486006
+29-914822031
 19971667623
-MainWindow.xaml;Views\CheckoutPopup.xaml;Views\DashboardView.xaml;Views\HistoryView.xaml;Views\HomeWindow.xaml;Views\InventoryView.xaml;Views\LoginWindow.xaml;Views\PosView.xaml;
+MainWindow.xaml;Views\CheckoutPopup.xaml;Views\DashboardView.xaml;Views\HistoryView.xaml;Views\HomeWindow.xaml;Views\InventoryView.xaml;Views\LoginWindow.xaml;Views\PosView.xaml;Views\RegisterWindow.xaml;
 
 False
 

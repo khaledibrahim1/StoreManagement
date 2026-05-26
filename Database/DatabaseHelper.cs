@@ -61,6 +61,34 @@ namespace StoreManagement.Database
                     command.ExecuteNonQuery();
                 }
 
+                string createUsersTable = @"
+                    CREATE TABLE IF NOT EXISTS Users (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        Username TEXT UNIQUE NOT NULL,
+                        Password TEXT NOT NULL
+                    )";
+                using (SQLiteCommand command = new SQLiteCommand(createUsersTable, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+
+                // Check if admin user is needed
+                string checkUsersQuery = "SELECT COUNT(*) FROM Users";
+                using (SQLiteCommand command = new SQLiteCommand(checkUsersQuery, connection))
+                {
+                    long userCount = (long)command.ExecuteScalar();
+                    if (userCount == 0)
+                    {
+                        string adminPasswordHash = HashPassword("admin");
+                        string insertAdmin = "INSERT INTO Users (Username, Password) VALUES ('admin', @Password)";
+                        using (SQLiteCommand insertCommand = new SQLiteCommand(insertAdmin, connection))
+                        {
+                            insertCommand.Parameters.AddWithValue("@Password", adminPasswordHash);
+                            insertCommand.ExecuteNonQuery();
+                        }
+                    }
+                }
+
                 // Check if dummy data is needed
                 string checkProductsQuery = "SELECT COUNT(*) FROM Products";
                 using (SQLiteCommand command = new SQLiteCommand(checkProductsQuery, connection))
@@ -269,6 +297,96 @@ namespace StoreManagement.Database
                 }
             }
             return items;
+        }
+
+        public static string HashPassword(string password)
+        {
+            using (System.Security.Cryptography.SHA256 sha256 = System.Security.Cryptography.SHA256.Create())
+            {
+                byte[] bytes = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                System.Text.StringBuilder builder = new System.Text.StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+                return builder.ToString();
+            }
+        }
+
+        public static bool RegisterUser(string username, string password, out string errorMessage)
+        {
+            errorMessage = string.Empty;
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+            {
+                errorMessage = "Username and password cannot be empty.";
+                return false;
+            }
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    
+                    // Check if username exists
+                    string checkQuery = "SELECT COUNT(*) FROM Users WHERE LOWER(Username) = LOWER(@Username)";
+                    using (SQLiteCommand checkCmd = new SQLiteCommand(checkQuery, connection))
+                    {
+                        checkCmd.Parameters.AddWithValue("@Username", username.Trim());
+                        long count = (long)checkCmd.ExecuteScalar();
+                        if (count > 0)
+                        {
+                            errorMessage = "Username is already taken.";
+                            return false;
+                        }
+                    }
+
+                    string query = "INSERT INTO Users (Username, Password) VALUES (@Username, @Password)";
+                    using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Username", username.Trim());
+                        command.Parameters.AddWithValue("@Password", HashPassword(password));
+                        command.ExecuteNonQuery();
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                errorMessage = "Database error: " + ex.Message;
+                return false;
+            }
+        }
+
+        public static bool ValidateUser(string username, string password)
+        {
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+                return false;
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    string query = "SELECT Password FROM Users WHERE LOWER(Username) = LOWER(@Username)";
+                    using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Username", username.Trim());
+                        object result = command.ExecuteScalar();
+                        if (result != null)
+                        {
+                            string storedHash = result.ToString();
+                            string inputHash = HashPassword(password);
+                            return string.Equals(storedHash, inputHash, StringComparison.OrdinalIgnoreCase);
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // Fallback or log error
+            }
+            return false;
         }
     }
 }
