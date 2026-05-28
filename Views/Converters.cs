@@ -39,4 +39,19 @@ namespace StoreManagement.Views
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotImplementedException();
     }
+
+    public class ViewModelTypeToBooleanConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null || parameter == null)
+                return "False";
+
+            string targetTypeName = parameter.ToString();
+            return value.GetType().Name == targetTypeName ? "True" : "False";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotImplementedException();
+    }
 }
+
